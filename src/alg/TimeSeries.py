@@ -14,18 +14,17 @@ class TimeSeries(ABC):
         :return:
         DataFrame: Time series data
         """
-        data = df[[self.column]].astype('float')
+        data = df[[self.column]]  # .astype('float')
         data.columns = ['value']
         if nbeat:
             data['time_idx'] = data.index
             data['series'] = 0
 
         # Convert to time series
-        if not date_column:
-            date = [i for i in range(0, data.shape[0] * self.period, self.period)]
-            data = data.join(pd.DataFrame(data=date, columns=['date']))
-            data['date'] = pd.to_datetime(data['date'], unit=datetime)
-        else:
-            data['date'] = df[date_column]
-
+        # if not date_column:
+        #     date = [i for i in range(0, data.shape[0] * self.period, self.period)]
+        #     data = data.join(pd.DataFrame(data=date, columns=['date']))
+        #     data['date'] = pd.to_datetime(data['date'], unit=datetime)
+        # else:
+        #     data['date'] = df[date_column]
         return data

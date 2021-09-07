@@ -9,11 +9,11 @@ from pytorch_forecasting import NBeats, TimeSeriesDataSet
 from pytorch_forecasting.data import NaNLabelEncoder
 from pytorch_lightning.callbacks import EarlyStopping
 from .TimeSeries import TimeSeries
+from utils.constants import *
 
 warnings.filterwarnings('ignore')
 
-PERIOD = 20
-DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+DIR = DIR_FROM_ALG
 
 
 class PyNbeats(TimeSeries):
