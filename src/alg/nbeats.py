@@ -10,6 +10,7 @@ from pytorch_forecasting.data import NaNLabelEncoder
 from pytorch_lightning.callbacks import EarlyStopping
 from .TimeSeries import TimeSeries
 from utils.constants import *
+from utils.sub_functions import (seed, )
 
 warnings.filterwarnings('ignore')
 
@@ -17,7 +18,7 @@ DIR = DIR_FROM_ALG
 
 
 class PyNbeats(TimeSeries):
-    def __init__(self, data, column="value", period=PERIOD, date_column=None):
+    def __init__(self, data, column="value", period=PERIOD):
         super(TimeSeries, self).__init__()
         """
         :param data: DataFrame
@@ -30,7 +31,6 @@ class PyNbeats(TimeSeries):
         """
         self.column = column
         self.period = period
-        self.date_column = date_column
         self.data = self.make_time_series(df=data, nbeat=True)
         self.training = None
 
@@ -85,7 +85,7 @@ class PyNbeats(TimeSeries):
         :param gpus:
         :return:
         """
-        pl.seed_everything(42)
+        seed()
         trainer = pl.Trainer(gpus=gpus, gradient_clip_val=0.01)
         net = NBeats.from_dataset(self.training, learning_rate=3e-2, weight_decay=1e-2, widths=[32, 512],
                                   backcast_loss_ratio=0.1)
@@ -102,7 +102,7 @@ class PyNbeats(TimeSeries):
             weights_summary="top",
             gradient_clip_val=0.01,
             callbacks=[early_stop_callback],
-            limit_train_batches=30,
+            limit_train_batches=30, # TO-DO : need to be dynamic
         )
 
         net = NBeats.from_dataset(

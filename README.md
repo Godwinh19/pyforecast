@@ -7,10 +7,10 @@ the code base.
 ### Supported Algorithms
 
 - N-beats
+- SARIMA
 
 ### Algorithms in queue
 
-- SARIMA
 - LSTM, CNN, etc
 - FbProphet
 - etc

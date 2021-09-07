@@ -7,11 +7,12 @@ from utils.dir_helper import remove_lightning_logs_folder
 DIR = os.path.dirname(os.path.dirname(__file__))
 
 df = pd.read_csv(os.path.join(DIR, 'data\\GOOG.csv'))
+
 method = 'sarima'
 
-if method == 'nbeat':
+if method == 'nbeats':
 
-    nbeats = PyNbeats(data=df, column='Close', period=20, date_column='Date')
+    nbeats = PyNbeats(data=df, column='Close', period=30)
     train_dataloader, val_dataloader = nbeats.create_train_time_series_dataset()
 
     nbeats.train_model(train_dataloader, val_dataloader)
@@ -21,7 +22,7 @@ if method == 'nbeat':
     remove_lightning_logs_folder()
 
 elif method == 'sarima':
-    sarima = Sarima(data=df, column='Close', period=30, date_column='Date')
+    sarima = Sarima(data=df, column='Close', period=30)
     original_y_first_element, min_log_value = 0, 0
 
     if not sarima.is_stationary:
@@ -34,4 +35,3 @@ elif method == 'sarima':
         y_forecast,
         original_y_first_element,
         min_log_value)
-    print(y_forecast)
