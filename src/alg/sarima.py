@@ -5,7 +5,7 @@ import itertools
 import statsmodels.api as sm
 from statsmodels.tsa.stattools import adfuller
 from .TimeSeries import TimeSeries
-from utils.constants import *
+from src.utils.constants import *
 
 DIR = DIR_FROM_ALG
 

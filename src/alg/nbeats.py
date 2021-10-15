@@ -9,8 +9,8 @@ from pytorch_forecasting import NBeats, TimeSeriesDataSet
 from pytorch_forecasting.data import NaNLabelEncoder
 from pytorch_lightning.callbacks import EarlyStopping
 from .TimeSeries import TimeSeries
-from utils.constants import *
-from utils.sub_functions import (seed, )
+from src.utils.constants import *
+from src.utils.sub_functions import (seed, )
 
 warnings.filterwarnings('ignore')
 
@@ -140,6 +140,8 @@ class PyNbeats(TimeSeries):
         """
         model = NBeats.load_from_checkpoint(os.path.join(DIR, 'model/nbeats.ckpt'))
         raw_predictions = model.predict(dataloader, mode="raw", return_x=False)
-        df = pd.DataFrame(data=np.array(raw_predictions['prediction'].reshape(-1, 1)), columns=['prediction'])
+        y = np.array(raw_predictions['prediction'].reshape(-1, 1))
+        df = pd.DataFrame(data=y, columns=['prediction'])
         df.to_csv(os.path.join(DIR, 'data/nbeats_forecast.csv'), index=False)
+        return y
 
