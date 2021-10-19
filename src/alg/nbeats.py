@@ -76,18 +76,22 @@ class PyNbeats(TimeSeries):
         """
         pass
 
-    def train_model(self, train_dataloader, val_dataloader, epochs=20, gpus=0):
+    def train_model(self, train_dataloader, val_dataloader, epochs=20, gpus=0, options={}):
         """
         This method performs the training step
         :param train_dataloader:
         :param val_dataloader:
         :param epochs:
         :param gpus:
+        :param options: dictionary for additional parameters
         :return:
         """
         seed()
         trainer = pl.Trainer(gpus=gpus, gradient_clip_val=0.01)
-        net = NBeats.from_dataset(self.training, learning_rate=3e-2, weight_decay=1e-2, widths=[32, 512],
+        widths = options['widths'] if 'widths' in options.keys() else [32, 512]
+        limit_train_batches = options['limit_train_batches'] if 'limit_train_batches' in options.keys() else 30
+        
+        net = NBeats.from_dataset(self.training, learning_rate=3e-2, weight_decay=1e-2, widths=widths,
                                   backcast_loss_ratio=0.1)
         # find optimal learning rate
         res = trainer.tuner.lr_find(net, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader,
@@ -102,7 +106,7 @@ class PyNbeats(TimeSeries):
             weights_summary="top",
             gradient_clip_val=0.01,
             callbacks=[early_stop_callback],
-            limit_train_batches=30, # TO-DO : need to be dynamic
+            limit_train_batches=limit_train_batches, # TO-DO : need to be dynamic
         )
 
         net = NBeats.from_dataset(
@@ -111,7 +115,7 @@ class PyNbeats(TimeSeries):
             log_interval=10,
             log_val_interval=1,
             weight_decay=1e-2,
-            widths=[32, 512],
+            widths=widths,
             backcast_loss_ratio=1.0,
         )
 
